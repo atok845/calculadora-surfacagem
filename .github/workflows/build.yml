@@ -7,10 +7,11 @@ on:
 
 jobs:
   build:
+    name: Build APK
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout source code
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -21,20 +22,16 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y zip unzip openjdk-11-jdk python3-pip git
+          sudo apt install -y python3-pip zip unzip openjdk-17-jdk wget git
           pip install --upgrade pip
           pip install buildozer cython
-
-      - name: Initialize Buildozer
-        run: |
-          buildozer init || echo "Já existe um buildozer.spec"
 
       - name: Build APK
         run: |
           buildozer android debug
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
+      - name: Upload APK to GitHub Artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: CalculadoraSurfacagem-APK
+          name: calculadora-surfacagem
           path: bin/*.apk
