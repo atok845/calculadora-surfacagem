@@ -7,11 +7,10 @@ on:
 
 jobs:
   build:
-    name: Build APK
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
+      - name: Checkout repository
         uses: actions/upload-artifact@v2.3.1
 
       - name: Set up Python
@@ -22,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y python3-pip zip unzip openjdk-17-jdk wget git
+          sudo apt install -y zip unzip openjdk-11-jdk python3-pip git
           pip install --upgrade pip
           pip install buildozer cython
 
@@ -30,8 +29,8 @@ jobs:
         run: |
           buildozer android debug
 
-      - name: Upload APK to GitHub Artifacts
-        uses: actions/upload-artifact@v4
+      - name: Upload APK
+        uses: actions/upload-artifact@v2.3.1
         with:
           name: calculadora-surfacagem
           path: bin/*.apk
