@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v4
+        uses: actions/upload-artifact@v2.3.1
 
       - name: Set up Python
         uses: actions/setup-python@v4
