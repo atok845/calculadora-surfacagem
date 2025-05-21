@@ -29,6 +29,7 @@ jobs:
           sudo apt-get install -y openjdk-8-jdk
           sudo apt-get install -y libncurses6 libssl-dev  # Alterado para libncurses6
           pip install --upgrade pip
+          pip install cython  # Instalando Cython
           pip install buildozer
 
       - name: Install Android SDK
