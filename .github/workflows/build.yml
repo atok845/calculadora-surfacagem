@@ -43,7 +43,7 @@ jobs:
           buildozer android debug
 
       - name: Upload APK to artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4.6.2  # Versão mais recente
         with:
           name: myapp-apk
-          path: ./bin/*.apk  # O caminho correto para o arquivo APK gerado
+          path: ./bin/*.apk  # Caminho correto para o APK gerado
