@@ -33,15 +33,21 @@ jobs:
 
       - name: Install Android SDK and Build Tools
         run: |
-          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools/latest
-          cd $ANDROID_SDK_ROOT/cmdline-tools
+          # Criação do diretório do SDK e do caminho correto
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          cd $HOME/android-sdk/cmdline-tools
+          
+          # Baixar e extrair o SDK Android
           wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O sdk-tools.zip
           unzip sdk-tools.zip -d temp
-          # Mover o conteúdo extraído para o diretório correto
-          mv temp/cmdline-tools/* $ANDROID_SDK_ROOT/cmdline-tools/latest
+
+          # Mover o conteúdo extraído para a pasta correta
+          mv temp/cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest
           rm -rf temp
-          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses
-          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
+          
+          # Aceitar as licenças e instalar ferramentas necessárias
+          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses
+          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk \
             "platform-tools" \
             "platforms;android-31" \
             "build-tools;31.0.0" \
@@ -49,7 +55,7 @@ jobs:
 
       - name: Build with Buildozer
         run: |
-          export PATH=$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/build-tools/31.0.0:$PATH
+          export PATH=$HOME/android-sdk/platform-tools:$HOME/android-sdk/build-tools/31.0.0:$PATH
           buildozer android debug
 
       - name: Upload APK
