@@ -1,14 +1,19 @@
 [app]
 title = Calculadora Surfaçagem
-package.name = calculadora_surfacagem
-package.domain = org.example
+package.name = calculadora
+package.domain = org.test
 source.dir = .
-source.main = calculadora_surfacagem_kivy.py
+source.include_exts = py,png,jpg,kv,atlas
 version = 1.0
 requirements = python3,kivy
 orientation = portrait
-fullscreen = 0
+osx.kivy_version = 2.1.0
+fullscreen = 1
 
-[buildozer]
-log_level = 2
-warn_on_root = 1
+android.api = 33
+android.minapi = 21
+android.sdk_path = $HOME/android-sdk
+android.build_tools_version = 34.0.0
+android.ndk = 25b
+android.ndk_path = $HOME/android-ndk-r25b
+android.archs = armeabi-v7a
