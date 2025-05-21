@@ -1,43 +1,17 @@
 [app]
-# (list) Application title
+# Nome do aplicativo
 title = MyApp
-
-# (string) Package name
+# Pacote do aplicativo (nome único)
 package.name = myapp
-
-# (string) Package version
-package.version = 1.0
-
-# (string) Package identifier
+# Pacote do aplicativo para o Android
 package.domain = org.myapp
 
-# (list) Application requirements
-# comma separated e.g. python3,kivy
-# For a basic Kivy app:
-# requirements = python3,kivy
-requirements = python3,kivy,requests
+# Caminho para o código-fonte
+source.dir = .
 
-# (list) Application source files
-source.include_exts = py,png,jpg,kv,atlas
+# Versão do aplicativo
+version = 1.0.0  # Ou defina uma expressão regular, se necessário
 
-# (string) Custom source folders (e.g. 'src')
-# source.include_dirs =
-
-# (bool) Copy the library to the APK
-# copy_libs = True
-
-# (bool) Enable android (default is True)
+# Defina a plataforma alvo para Android
+# Isto será configurado pelo Buildozer automaticamente, mas você pode deixar com o padrão
 android = True
-
-# (string) Android NDK version (you may want to upgrade it)
-android.ndk = 21b
-
-# (string) Android SDK version
-android.sdk = 20
-
-# (string) Android API version
-android.api = 29
-
-# (bool) Enable debugging
-debug = 1
-
