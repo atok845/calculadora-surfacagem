@@ -1,37 +1,49 @@
-name: Build APK
+name: Build APK with Buildozer
 
 on:
   push:
     branches:
-      - main
+      - main  # ou a branch que você deseja que dispare a compilação
+  pull_request:
+    branches:
+      - main  # ou a branch que você deseja que dispare a compilação
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         with:
-          python-version: '3.10'
+          python-version: '3.8'
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y zip unzip openjdk-17-jdk python3-pip build-essential \
-            libncurses5 libstdc++6 libffi-dev libssl-dev liblzma-dev zlib1g-dev
+          sudo apt-get install -y python3-pip
+          sudo apt-get install -y python3-setuptools python3-wheel
+          sudo apt-get install -y openjdk-8-jdk
+          sudo apt-get install -y libncurses5 libssl-dev
           pip install --upgrade pip
-          pip install buildozer cython virtualenv
+          pip install buildozer
 
-      - name: Build APK
+      - name: Install Android dependencies
+        run: |
+          sudo apt-get install -y android-sdk
+          sudo apt-get install -y android-ndk
+          sudo apt-get install -y python3-dev
+          sudo apt-get install -y git
+
+      - name: Run Buildozer to compile APK
         run: |
           buildozer android debug
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - name: Upload APK to artifacts
+        uses: actions/upload-artifact@v2
         with:
-          name: app-debug.apk
-          path: bin/*.apk
+          name: app-release
+          path: ./bin/*.apk
