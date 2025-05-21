@@ -3,14 +3,17 @@ name: Build APK with Buildozer
 on:
   push:
     branches:
-      - main  # ou a branch que você deseja que dispare a compilação
+      - main
   pull_request:
     branches:
-      - main  # ou a branch que você deseja que dispare a compilação
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:
+      ANDROID_SDK_ROOT: $HOME/android-sdk
 
     steps:
       - name: Checkout code
@@ -21,32 +24,33 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Install dependencies
+      - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-pip
-          sudo apt-get install -y python3-setuptools python3-wheel
-          sudo apt-get install -y openjdk-8-jdk
-          sudo apt-get install -y libncurses6 libssl-dev  # Alterado para libncurses6
+          sudo apt-get install -y python3-pip python3-setuptools python3-wheel openjdk-8-jdk libncurses6 libssl-dev wget unzip
           pip install --upgrade pip
-          pip install cython  # Instalando Cython
-          pip install buildozer
+          pip install cython buildozer
 
-      - name: Install Android SDK
+      - name: Install Android SDK and Build Tools
         run: |
-          sudo apt-get install -y wget unzip
-          wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O android-commandline-tools.zip
-          unzip android-commandline-tools.zip -d $HOME/android-sdk
-          yes | $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses
-          yes | $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "platforms;android-29" "build-tools;29.0.2"
-          yes | $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "ndk-bundle"
+          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+          cd $ANDROID_SDK_ROOT/cmdline-tools
+          wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O cmdline-tools.zip
+          unzip cmdline-tools.zip -d latest
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
+            "platform-tools" \
+            "platforms;android-31" \
+            "build-tools;31.0.0" \
+            "ndk;21.4.7075529"
 
-      - name: Run Buildozer to compile APK
+      - name: Build with Buildozer
         run: |
+          export PATH=$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/build-tools/31.0.0:$PATH
           buildozer android debug
 
-      - name: Upload APK to artifacts
-        uses: actions/upload-artifact@v4.6.2  # Usando a versão mais recente
+      - name: Upload APK
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: myapp-apk
-          path: ./bin/*.apk  # Caminho correto para o APK gerado
+          path: ./bin/*.apk
