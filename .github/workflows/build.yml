@@ -45,5 +45,5 @@ jobs:
       - name: Upload APK to artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: app-release
-          path: ./bin/*.apk
+          name: myapp-apk
+          path: ./bin/*.apk  # O caminho correto para o arquivo APK gerado
