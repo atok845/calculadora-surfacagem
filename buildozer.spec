@@ -1,17 +1,14 @@
 [app]
-# Nome do aplicativo
-title = MyApp
-# Pacote do aplicativo (nome único)
-package.name = myapp
-# Pacote do aplicativo para o Android
-package.domain = org.myapp
-
-# Caminho para o código-fonte
+title = Calculadora Surfaçagem
+package.name = calculadora_surfacagem
+package.domain = org.example
 source.dir = .
+source.main = calculadora_surfacagem_kivy.py
+version = 1.0
+requirements = python3,kivy
+orientation = portrait
+fullscreen = 0
 
-# Versão do aplicativo
-version = 1.0.0  # Ou defina uma expressão regular, se necessário
-
-# Defina a plataforma alvo para Android
-# Isto será configurado pelo Buildozer automaticamente, mas você pode deixar com o padrão
-android = True
+[buildozer]
+log_level = 2
+warn_on_root = 1
