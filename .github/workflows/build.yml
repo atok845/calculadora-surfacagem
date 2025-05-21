@@ -1,65 +1,30 @@
-name: Build APK with Buildozer
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
+name: Build APK
+on: [push]
 jobs:
-  build:
+  build-android:
+    name: Build for Android
     runs-on: ubuntu-latest
-
-    env:
-      ANDROID_SDK_ROOT: $HOME/android-sdk
-
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Buildozer dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y git zip unzip python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev automake
+          pip install --user --upgrade Cython virtualenv
+          pip install --user --upgrade buildozer
+          echo 'export PATH=$PATH:~/.local/bin/' >> ~/.bashrc
+
+      - name: Handle Java path
+        run: |
+          export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64
+          sudo update-java-alternatives --set ${JAVA_HOME}
+          export PATH=$JAVA_HOME/bin:$PATH
+          yes | buildozer -v android debug
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
         with:
-          python-version: '3.8'
-
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip python3-setuptools python3-wheel openjdk-8-jdk libncurses6 libssl-dev wget unzip zip
-          pip install --upgrade pip
-          pip install cython buildozer
-
-      - name: Install Android SDK and Build Tools
-        run: |
-          # Criação do diretório do SDK e do caminho correto
-          mkdir -p $HOME/android-sdk/cmdline-tools
-          cd $HOME/android-sdk/cmdline-tools
-          
-          # Baixar e extrair o SDK Android
-          wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O sdk-tools.zip
-          unzip sdk-tools.zip -d temp
-
-          # Mover o conteúdo extraído para a pasta correta
-          mv temp/cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest
-          rm -rf temp
-          
-          # Aceitar as licenças e instalar ferramentas necessárias
-          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses
-          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk \
-            "platform-tools" \
-            "platforms;android-31" \
-            "build-tools;31.0.0" \
-            "ndk;21.4.7075529"
-
-      - name: Build with Buildozer
-        run: |
-          export PATH=$HOME/android-sdk/platform-tools:$HOME/android-sdk/build-tools/31.0.0:$PATH
-          buildozer android debug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4.1.0
-        with:
-          name: myapp-apk
-          path: ./bin/*.apk
+          name: package
+          path: bin/*.apk
