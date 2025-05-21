@@ -47,5 +47,3 @@ jobs:
         with:
           name: myapp-apk
           path: ./bin/*.apk  # Caminho correto para o APK gerado
-
-          path: ./bin/*.apk  # Caminho correto para o APK gerado
